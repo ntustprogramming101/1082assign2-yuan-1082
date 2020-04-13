@@ -25,12 +25,13 @@ final int GAME_START = 0;
 final int GAME_RUN = 1;
 final int GAME_OVER = 2;
 
+
 boolean downPressed = false;
 boolean leftPressed = false;
 boolean rightPressed = false;
 
 void setup() {
-  size(640, 480, P2D);
+	size(640, 480, P2D);
   
   
   //load images
@@ -65,9 +66,9 @@ void setup() {
 }
 
 void draw() {
-  image(title, 0, 0);
-  image(startNormal, 248, 360);
-  // Switch Game State
+      image(title, 0, 0);
+      image(startNormal, 248, 360);
+	// Switch Game State
   switch(gameState){
     
     // Game Start
@@ -167,8 +168,13 @@ void draw() {
        image(restartNormal, 248, 360);
        //mouse action
        if(mouseX>248 && mouseX<392 && mouseY>360 && mouseY<420){
+         if(mousePressed){
+           lifeCount = 2;
+           gameState = GAME_RUN;
+         }else{
            //hover
            image(restartHovered, 248, 360);         
+         }
        }
        break;
   }
@@ -200,16 +206,6 @@ void keyPressed(){
         groundhogX = width-layer;
       }
         break;
-    }
-  }
-}
-
-void mouseClicked(){
-  // game over to start 
-  if(gameState == GAME_OVER){
-    if(mouseX>248 && mouseX<392 && mouseY>360 && mouseY<420){
-      lifeCount = 2;
-      gameState = GAME_START;
     }
   }
 }
