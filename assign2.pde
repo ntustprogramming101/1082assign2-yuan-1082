@@ -84,12 +84,9 @@ void draw() {
           image(startHovered, 248, 360);
         }
       }
-      
+
       //reset
 
-      soldierY = layer*floor(random(2,6));
-      cabbageX = layer*floor(random(0,8));
-      cabbageY = layer*floor(random(2,5));
 
       break;
      
@@ -100,7 +97,9 @@ void draw() {
     image(soilImg,0,layer*2);
     image(lifeImg,life1,10);
     image(lifeImg,life2,10);
-    
+   
+
+
     // Grass
     noStroke();
     fill(124,204,25);
@@ -170,6 +169,9 @@ void draw() {
        if(mouseX>248 && mouseX<392 && mouseY>360 && mouseY<420){
          if(mousePressed){
            lifeCount = 2;
+           soldierY = layer*floor(random(2,6));
+           cabbageX = layer*floor(random(0,8));
+           cabbageY = layer*floor(random(2,5));  
            gameState = GAME_RUN;
          }else{
            //hover
