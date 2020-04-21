@@ -3,7 +3,7 @@ PImage cabbage, title, gameover;
 PImage startNormal, startHovered, restartNormal, restartHovered;
 PImage groundhogDown, groundhogIdle, groundhogLeft, groundhogRight;
 
-float layer = 80;
+float block = 80;
 float soldierX, soldierY; 
 float cabbageX, cabbageY;
 float speedX, speedY;
@@ -16,9 +16,7 @@ int life3 = 150;
 int loseLife = -100;
 int lifeCount = 2 ;
 
-int vertical = 1;
-int horizon = 4;
-float move = 0;
+float moveX, moveY;
 
 int gameState;
 final int GAME_START = 0;
@@ -52,16 +50,14 @@ void setup() {
   groundhogRight = loadImage("img/groundhogRight.png");
   
   //soldierX = -soldierWidth;
-  soldierY = layer*floor(random(2,6));
-  cabbageX = layer*floor(random(0,8));
-  cabbageY = layer*floor(random(2,5));
+  soldierY = block*floor(random(2,6));
+  cabbageX = block*floor(random(0,8));
+  cabbageY = block*floor(random(2,5));
   gameState = GAME_START;
-  groundhogX = 4*layer;
-  groundhogY = layer;
+  groundhogX = 4*block;
+  groundhogY = block;
   groundhogX2 = groundhogX;
   groundhogY2 = groundhogY;
-  
-  frameRate(25);
 
 }
 
@@ -94,7 +90,7 @@ void draw() {
     case GAME_RUN:
 
     image(bgImg,0,0);
-    image(soilImg,0,layer*2);
+    image(soilImg,0,block*2);
     image(lifeImg,life1,10);
     image(lifeImg,life2,10);
    
@@ -114,26 +110,51 @@ void draw() {
     // Soldier
     soldierX += 5;
     soldierX %= -720;
-    image(soldierImg, soldierX-layer, soldierY);
+    image(soldierImg, soldierX-block, soldierY);
     
     // Groundhog
-    image(groundhogIdle, groundhogX, groundhogY);
-  
+    
+    if(downPressed){
+      if(moveY < groundhogY){
+        image( groundhogDown, groundhogX, moveY);
+        moveY += floor(80/15);
+      }else{
+        downPressed = false;
+      }
+    }else if(leftPressed){      
+            if(moveX > groundhogX){
+            image( groundhogLeft, moveX, groundhogY);
+            moveX -= floor(block/15);
+            }else{
+              leftPressed = false;
+            }
+    }else if(rightPressed){
+            if(moveX < groundhogX){
+            image( groundhogRight, moveX, groundhogY);
+            moveX += floor(block/15);
+            }else{
+              rightPressed = false;
+            }
+    }else{
+      image(groundhogIdle, groundhogX, groundhogY);
+    }
+    
+    
+    
+    
     // Hit Soldier Detection
-    if(soldierX>groundhogX && soldierX-layer<groundhogX+layer){
-      if(soldierY+layer>groundhogY && soldierY<groundhogY+layer){
-        vertical = 1;
-        horizon = 4;
-        groundhogX = 4*layer;
-        groundhogY = layer;
+    if(soldierX>groundhogX && soldierX-block<groundhogX+block){
+      if(soldierY+block>groundhogY && soldierY<groundhogY+block){
+        groundhogX = 4*block;
+        groundhogY = block;
         lifeCount -= 1;
       }
     }
     
     // Eat Cabbage Detection
     image(cabbage, cabbageX, cabbageY);
-    if(cabbageX+layer>groundhogX && cabbageX<groundhogX+layer){
-      if(cabbageY+layer>groundhogY && cabbageY<groundhogY+layer){
+    if(cabbageX+block>groundhogX && cabbageX<groundhogX+block){
+      if(cabbageY+block>groundhogY && cabbageY<groundhogY+block){
         cabbageY = 600;
         lifeCount += 1;
       }
@@ -141,8 +162,6 @@ void draw() {
     
     // Life Count
     if(lifeCount == 0){
-      groundhogX = 4*layer;
-      groundhogY = layer;
       gameState = GAME_OVER; 
     }
     if(lifeCount == 1){
@@ -168,10 +187,13 @@ void draw() {
        //mouse action
        if(mouseX>248 && mouseX<392 && mouseY>360 && mouseY<420){
          if(mousePressed){
+           // reset
            lifeCount = 2;
-           soldierY = layer*floor(random(2,6));
-           cabbageX = layer*floor(random(0,8));
-           cabbageY = layer*floor(random(2,5));  
+           soldierY = block*floor(random(2,6));
+           cabbageX = block*floor(random(0,8));
+           cabbageY = block*floor(random(2,5));  
+           groundhogX = block*4;
+           groundhogY = block;
            gameState = GAME_RUN;
          }else{
            //hover
@@ -183,31 +205,63 @@ void draw() {
 }
 
 void keyPressed(){
-  if(key == CODED){
-    switch (keyCode){
-      case UP:
-        break;
+    if( !leftPressed && !rightPressed && !downPressed){   
+    if(key == CODED){
+      switch (keyCode){
         
-      case DOWN:
-      groundhogY += layer;
-      if(groundhogY >= height-layer){
-        groundhogY = height-layer;
-      }     
-         break;
-         
-      case LEFT:
-      groundhogX -= layer;
-      if(groundhogX <= 0){
-        groundhogX = 0;
-      }      
-        break;
+        case DOWN:  
+          moveY = groundhogY;
+          if(moveY < height-block){ 
+            downPressed = true;          
+            groundhogY += block;
+            println(moveX,moveY);
+            println(groundhogX,groundhogY);
+          }
+          
         
-      case RIGHT:   
-      groundhogX += layer;
-      if(groundhogX >= width-layer){
-        groundhogX = width-layer;
+           break;
+           
+        case LEFT:
+        moveX = groundhogX;
+        if(moveX > 0){
+          leftPressed = true;
+          groundhogX -= block;
+          println(moveX,moveY);
+          println(groundhogX,groundhogY);
+        }
+          break;
+          
+        case RIGHT:
+        moveX = groundhogX;
+        if(moveX < width-block){
+          rightPressed = true;
+          groundhogX += block;
+          println(moveX,moveY);
+          println(groundhogX,groundhogY);
+        }
+  
+          break;
       }
-        break;
+    }
+  }
+}
+
+
+void keyReleased(){
+  if(key == CODED){
+    switch(keyCode){
+      case DOWN:
+
+      break;
+      
+      case LEFT:
+      
+      break;
+      
+      case RIGHT:
+      
+      break;
+  
     }
   }
 }
