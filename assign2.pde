@@ -213,9 +213,7 @@ void keyPressed(){
           moveY = groundhogY;
           if(moveY < height-block){ 
             downPressed = true;          
-            groundhogY += block;
-            println(moveX,moveY);
-            println(groundhogX,groundhogY);
+            groundhogY += block;       
           }
           
         
@@ -225,9 +223,7 @@ void keyPressed(){
         moveX = groundhogX;
         if(moveX > 0){
           leftPressed = true;
-          groundhogX -= block;
-          println(moveX,moveY);
-          println(groundhogX,groundhogY);
+          groundhogX -= block;       
         }
           break;
           
@@ -236,9 +232,7 @@ void keyPressed(){
         if(moveX < width-block){
           rightPressed = true;
           groundhogX += block;
-          println(moveX,moveY);
-          println(groundhogX,groundhogY);
-        }
+            }
   
           break;
       }
